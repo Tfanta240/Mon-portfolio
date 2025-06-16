@@ -1,0 +1,127 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projets - Fanta Traore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Fanta Traore</div>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="about.html">À propos</a></li>
+                <li><a href="projects.html">Projets</a></li>
+                <li><a href="hobbies.html">Hobbies</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="projects">
+        <h2>Mes Projets</h2>
+        <div class="project-grid">
+            <div class="project-card">
+                <img src="images-fanta-profile.jpg" alt="Community Management">
+                <h3>Community Management</h3>
+                <p>Stratégies pour augmenter l'engagement sur les réseaux sociaux.</p>
+                <p class="tags">#SocialMedia #Engagement</p>
+                <a href="#" class="project-link">Voir</a>
+            </div>
+            <div class="project-card">
+                <img src="https://via.placeholder.com/300x200" alt="SEO">
+                <h3>SEO</h3>
+                <p>Optimisation de sites pour améliorer leur visibilité sur les moteurs de recherche.</p>
+                <p class="tags">#SEO #Web</p>
+                <a href="#" class="project-link">Voir</a>
+            </div>
+            <div class="project-card">
+                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAoHBwwHBgoJCAkKLQoMCgo..." alt="Création d'affiches">
+                <h3>Création d'affiches</h3>
+                <p>Conception d'affiches publicitaires attrayantes.</p>
+                <p class="tags">#Design #Graphisme</p>
+                <a href="#" class="project-link">Voir</a>
+            </div>
+            <div class="project-card">
+                <img src="https://via.placeholder.com/300x200" alt="Flyers">
+                <h3>Flyers</h3>
+                <p>Création de flyers pour des événements et promotions.</p>
+                <p class="tags">#Design #Marketing</p>
+                <a href="#" class="project-link">Voir</a>
+            </div>
+            <div class="project-card">
+                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAoHBwwHBgoJCAkKLQoMCgo..." alt="Carte de visite de mariage">
+                <h3>Carte de visite de mariage</h3>
+                <p>Design personnalisé pour des cartes de visite élégantes.</p>
+                <p class="tags">#Design #Événementiel</p>
+                <a href="#" class="project-link">Voir</a>
+            </div>
+            <div class="project-card">
+                <img src="https://via.placeholder.com/300x200" alt="Kakemono">
+                <h3>Kakemono</h3>
+                <p>Conception de kakemonos pour des stands et expositions.</p>
+                <p class="tags">#Design #Publicité</p>
+                <a href="#" class="project-link">Voir</a>
+            </div>
+            <div class="project-card">
+                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAoHBwwHBgoJCAkKLQoMCgo..." alt="Spot publicitaire">
+                <h3>Spot publicitaire</h3>
+                <p>Création de vidéos promotionnelles percutantes.</p>
+                <p class="tags">#Vidéo #Marketing</p>
+                <a href="#" class="project-link">Voir</a>
+            </div>
+            <div class="project-card">
+                <img src="https://via.placeholder.com/300x200" alt="Site web">
+                <h3>Site web</h3>
+                <p>Développement de sites web modernes et responsifs.</p>
+                <p class="tags">#Web #HTML #CSS #JS</p>
+                <a href="#" class="project-link">Voir</a>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
